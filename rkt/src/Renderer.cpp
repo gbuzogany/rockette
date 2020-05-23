@@ -111,8 +111,8 @@ void Renderer::renderFlat(ShaderProgram &program, GLfloat x, GLfloat y, GLfloat 
     renderRect(x, y, width, height, flipY);
 }
 
-void Renderer::renderTexture(GLuint textureId, GLfloat x, GLfloat y, GLfloat width, GLfloat height, ShaderProgram *program) {
-    if (program == nullptr) {
+void Renderer::renderTexture(GLuint textureId, GLfloat x, GLfloat y, GLfloat width, GLfloat height, bool flipY, bool defaultProgram) {
+    if (defaultProgram) {
         useProgram(*defaultTextureProgram);
         
         GLuint u_squareTextureId = defaultTextureProgram->getUniformLocation("textureSampler");
@@ -123,14 +123,11 @@ void Renderer::renderTexture(GLuint textureId, GLfloat x, GLfloat y, GLfloat wid
         
         glUniform1i(u_squareTextureId, 0);
         glActiveTexture(GL_TEXTURE0);
+        
     }
-    else {
-        useProgram(*program);
-    }
-    
     bindTexture(textureId);
     
-    renderRect(x, y, width, height, true);
+    renderRect(x, y, width, height, flipY);
 }
 
 void Renderer::renderRect(GLfloat x, GLfloat y, GLfloat width, GLfloat height, bool flipY) {
