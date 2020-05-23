@@ -20,8 +20,6 @@ class MainScene : Scene {
     std::queue<Animation*> animationQueue;
     
     FontWrapper *roboto, *robotoSmall;
-    
-    void createFramebuffer();
 public:
     MainScene(Renderer *r, RocketteServiceImpl *service);
     ~MainScene();
