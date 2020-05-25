@@ -83,13 +83,24 @@ _r->renderText(textHuge, "HelloWorld", 100.0f, 200.0f, 1.0f, glm::vec3(1.0f, 1.0
 
 ## Texture loading / rendering
 
-Only 32-bit TGA are supported. You should use the static method `GLuint Texture::loadTGA(std::string path);` to load your texture:
+Only 32-bit TGA are supported. You should use the static method:
+
+```
+GLuint Texture::loadTGA(std::string path);
+```
+
+To load your texture. Example:
+
 
 ```
 GLuint arcTexture = Texture::loadTGA("rkt/etc/textures/radial.tga");
 ```
 
-Then, to render the texture, use the `Renderer` method `void renderTexture(GLuint textureId, GLfloat x, GLfloat y, GLfloat width, GLfloat height, ShaderProgram *program = nullptr);`
+Then, to render the texture, use the `Renderer` method:
+
+```
+void renderTexture(GLuint textureId, GLfloat x, GLfloat y, GLfloat width, GLfloat height, bool flipY = false, bool defaultProgram = true);
+```
 
 Example:
 
@@ -103,7 +114,7 @@ There are already primitives in place to compile/use shader programs easily.
 
 ### Loading/compiling a shader
 ```
-ShaderProgram *myCustomProgram = loadShaders( "rkt/etc/shaders/myCustomVertexProgram.glsl", "rkt/etc/shaders/myCustomFragmentProgram.glsl" );
+RawShaderProgram *myCustomProgram = new RawShaderProgram( "rkt/etc/shaders/myCustomVertexProgram.glsl", "rkt/etc/shaders/myCustomFragmentProgram.glsl" );
 ```
 
 ### Using a shader program
@@ -112,7 +123,7 @@ When using OpenGL calls directly, you should use the `Renderer::useProgram()` me
 
 You can use the `ShaderProgram::getUniformLocation()` method to get uniform identifiers.
 
-The `Renderer::renderTexture()` method has a parameter that allows you to pass a program to be used when rendering the texture, otherwise it will use the default program.
+If you want to render a texture using a custom shader, you can configure your shader and textures manually, then call `_r->renderRect(posx, posy, width, height, flipY);` to render a rectangle to the screen with default UV coordinates `(0,0)->(1,1)`.
 
 You can also set what shader to use by default when rendering text by using the `Renderer::setTextProgram()` method.
 
