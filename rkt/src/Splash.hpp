@@ -7,6 +7,7 @@
 #include "Definitions.h"
 #include "Scene.hpp"
 #include "Animation.hpp"
+#include "ShaderProgram.hpp"
 
 class Splash : Scene {
     GLuint dissolveRampTextureId;
@@ -19,8 +20,6 @@ class Splash : Scene {
     ShaderProgram *dissolveProgram;
 
     std::queue<Animation*> animationQueue;
-    
-    void setupDissolve(GLuint textureId);
     
     ~Splash();
 public:

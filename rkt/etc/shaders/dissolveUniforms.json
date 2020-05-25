@@ -1,0 +1,18 @@
+{
+	"baseTexture": {
+		"label" : "Base Texture",
+		"type": "t",
+		"value": null
+	},
+	"noiseTexture": {
+		"type": "t",
+		"value": null
+	},
+    "rampTexture": {
+        "type": "t",
+        "value": null
+    },
+    "dissolve": {
+        "value" : 0
+    }
+}

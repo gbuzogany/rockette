@@ -1,7 +1,4 @@
 #include "Renderer.hpp"
-#include <assert.h>
-#include <iostream>
-#include "Definitions.h"
 
 Renderer::Renderer()
 {
@@ -11,10 +8,16 @@ Renderer::Renderer()
 }
 
 void Renderer::initShaders() {
-    defaultTextProgram = new ShaderProgram( "rkt/etc/shaders/TextVertex.glsl", "rkt/etc/shaders/TextFragment.glsl" );
-    defaultTextureProgram = new ShaderProgram( "rkt/etc/shaders/TextureVertexShader.glsl", "rkt/etc/shaders/TextureFragmentShader.glsl" );
+    defaultTextProgram = new RawShaderProgram( "rkt/etc/shaders/TextVertex.glsl", "rkt/etc/shaders/TextFragment.glsl" );
+    defaultTextureProgram = new RawShaderProgram( "rkt/etc/shaders/TextureVertexShader.glsl", "rkt/etc/shaders/TextureFragmentShader.glsl" );
+    
+    hBlurProgram = new RawShaderProgram( "rkt/etc/shaders/HBlurVertexShader.glsl", "rkt/etc/shaders/BlurFragmentShader.glsl" );
+    vBlurProgram = new RawShaderProgram( "rkt/etc/shaders/VBlurVertexShader.glsl", "rkt/etc/shaders/BlurFragmentShader.glsl" );
     
     textProgram = defaultTextProgram;
+    
+    createFramebuffer(frameBuffer1, screenTexture1, WIDTH, HEIGHT);
+    createFramebuffer(frameBuffer2, screenTexture2, WIDTH, HEIGHT);
 }
 
 void Renderer::initGraphics()
@@ -52,6 +55,7 @@ void Renderer::initGraphics()
     printf("Started with GLSL %s\n",  glGetString(GL_SHADING_LANGUAGE_VERSION));
 
     glGenBuffers(1, &vertexbuffer);
+    glGenBuffers(1, &uvbuffer);
     
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
@@ -61,6 +65,10 @@ void Renderer::initGraphics()
 
 void Renderer::updateScreen() {
     SDL_GL_SwapWindow(window);
+}
+
+float Renderer::getTotalTime() {
+    return totalTime;
 }
 
 float Renderer::startFrame() {
@@ -86,6 +94,7 @@ float Renderer::startFrame() {
     else {
         fps = 1000.0 / delta;
     }
+    totalTime += delta / 1000.0;
     return delta / 1000.0;
 }
 
@@ -98,7 +107,7 @@ short Renderer::getFrameRate() {
     return fps;
 }
 
-void Renderer::renderFlat(ShaderProgram &program, GLfloat x, GLfloat y, GLfloat width, GLfloat height, bool flipY) {
+void Renderer::renderFlat(RawShaderProgram &program, GLfloat x, GLfloat y, GLfloat width, GLfloat height, bool flipY) {
 
     GLuint u_projectionID = program.getUniformLocation("projection");
     GLuint u_time = program.getUniformLocation("time");
@@ -163,11 +172,11 @@ void Renderer::bindTexture(GLuint texId) {
     }
 }
 
-void Renderer::setTextProgram(ShaderProgram *program) {
+void Renderer::setTextProgram(RawShaderProgram *program) {
     textProgram = program;
 }
 
-void Renderer::useProgram(ShaderProgram &program) {
+void Renderer::useProgram(RawShaderProgram &program) {
     GLuint id = program.getId();
     if (lastProgram != id) {
         glUseProgram(id);
@@ -218,7 +227,7 @@ float Renderer::renderText(FontWrapper &font, std::string text, GLfloat x, GLflo
         px -= kerning;
         
         GLfloat xpos = px + ((float)ch.bearing.x) * scale;
-        GLfloat ypos = HEIGHT - y - (ch.size.y - ch.bearing.y) * scale;
+        GLfloat ypos = HEIGHT - y + (-ch.size.y + ch.bearing.y) * scale - (fontSize * 0.75) * scale;
         
         GLfloat w = ch.size.x * scale;
         GLfloat h = ch.size.y * scale;
@@ -291,6 +300,10 @@ GLuint Renderer::getVertexBuffer() {
     return vertexbuffer;
 }
 
+GLuint Renderer::getUVBuffer() {
+    return uvbuffer;
+}
+
 void Renderer::drawCircle( GLfloat x, GLfloat y, GLfloat radius, GLint numberOfSides )
 {
     useProgram(*textProgram);
@@ -343,9 +356,18 @@ void Renderer::setGlobalAlpha(float alpha) {
     globalAlpha = alpha;
 }
 
-void Renderer::setProgramGlobalAlpha(ShaderProgram &program) {
+void Renderer::setGlobalAlpha() {
+    GLuint u_globalAlpha = glGetUniformLocation(lastProgram, "globalAlpha");
+    if (u_globalAlpha != -1) {
+        glUniform1f(u_globalAlpha, globalAlpha);
+    }
+}
+
+void Renderer::setProgramGlobalAlpha(RawShaderProgram &program) {
     GLuint u_globalAlpha = program.getUniformLocation("globalAlpha");
-    glUniform1f(u_globalAlpha, globalAlpha);
+    if (u_globalAlpha != -1) {
+        glUniform1f(u_globalAlpha, globalAlpha);
+    }
 }
 
 void Renderer::createFramebuffer(GLuint &frameBuffer, GLuint &screenTexture, GLuint width, GLuint height) {
@@ -381,4 +403,44 @@ void Renderer::bindFramebuffer(GLuint frameBuffer) {
 
 void Renderer::clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+GLuint Renderer::blurTexture(GLuint texId, float blurAmount) {
+    GLfloat alpha = globalAlpha;
+    setGlobalAlpha(1.0);
+    bindFramebuffer(frameBuffer1);
+    clear();
+    
+    glActiveTexture(GL_TEXTURE0);
+    
+    glm::mat4 projection = glm::ortho(0.0f, 800.0f, 0.0f, 480.0f);
+    
+    useProgram(*hBlurProgram);
+    GLuint u_texture = hBlurProgram->getUniformLocation("s_texture");
+    GLuint u_projectionID = hBlurProgram->getUniformLocation("projection");
+    GLuint u_blurAmount = hBlurProgram->getUniformLocation("blurAmount");
+    
+    glUniformMatrix4fv(u_projectionID, 1, GL_FALSE, &projection[0][0]);
+    glUniform1i(u_texture, 0);
+    glUniform1f(u_blurAmount, blurAmount);
+    
+    renderTexture(texId, 0, 0, WIDTH, HEIGHT, true, false);
+    
+    bindFramebuffer(frameBuffer2);
+    clear();
+    
+    useProgram(*vBlurProgram);
+    u_texture = vBlurProgram->getUniformLocation("s_texture");
+    u_projectionID = vBlurProgram->getUniformLocation("projection");
+    u_blurAmount = hBlurProgram->getUniformLocation("blurAmount");
+ 
+    glUniformMatrix4fv(u_projectionID, 1, GL_FALSE, &projection[0][0]);
+    glUniform1i(u_texture, 0);
+    glUniform1f(u_blurAmount, blurAmount);
+    
+    renderTexture(screenTexture1, 0, 0, WIDTH, HEIGHT, true, false);
+
+    bindFramebuffer(0);
+    setGlobalAlpha(alpha);
+    return screenTexture2;
 }

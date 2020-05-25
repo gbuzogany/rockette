@@ -76,7 +76,7 @@ void MainScene::render() {
     
     std::stringstream sfps;
     sfps << std::fixed << std::setprecision(0) << _r->getFrameRate();
-    _r->renderText(*robotoSmall, sfps.str(), 0.0f, HEIGHT, 1.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+    _r->renderText(*robotoSmall, sfps.str(), 0.0f, 0.0f, 1.0f, glm::vec3(0.5f, 0.5f, 0.5f));
 }
 
 void MainScene::renderFixed() {

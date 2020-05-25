@@ -16,7 +16,13 @@ Splash::Splash(Renderer *renderer, RocketteServiceImpl *service) : Scene(rendere
     animationQueue.push(new Animation("dissolve", 0, 1.0, 2.0));
     animationQueue.push(new Animation("delay", 0, 1.0, 1.0));
     
-    dissolveProgram = new ShaderProgram("rkt/etc/shaders/DissolveVertex.glsl", "rkt/etc/shaders/DissolveFragment.glsl");
+    dissolveProgram = new ShaderProgram("rkt/etc/shaders/DissolveVertex.glsl", "rkt/etc/shaders/DissolveFragment.glsl", "rkt/etc/shaders/dissolveUniforms.json");
+    
+    glm::mat4 projection = glm::ortho(0.0f, WIDTH, 0.0f, HEIGHT);
+    dissolveProgram->setMat4Uniform("projection", projection);
+    dissolveProgram->setTextureUniform("baseTexture", splashLogo);
+    dissolveProgram->setTextureUniform("noiseTexture", dissolveNoiseTextureId);
+    dissolveProgram->setTextureUniform("rampTexture", dissolveRampTextureId);
 }
 
 Splash::~Splash() {
@@ -64,38 +70,13 @@ bool Splash::update(float delta) {
     return true;
 }
 
-void Splash::setupDissolve(GLuint textureId) {
-    _r->useProgram(*dissolveProgram);
-    _r->setProgramGlobalAlpha(*dissolveProgram);
-    
-    GLuint u_baseTexture = dissolveProgram->getUniformLocation("baseTexture");
-    GLuint u_noiseTexture = dissolveProgram->getUniformLocation("noiseTexture");
-    GLuint u_rampTexture = dissolveProgram->getUniformLocation("rampTexture");
-    GLuint u_projection = dissolveProgram->getUniformLocation("projection");
-    GLuint u_dissolve = dissolveProgram->getUniformLocation("dissolve");
-    
-    glm::mat4 projection = glm::ortho(0.0f, WIDTH, 0.0f, HEIGHT);
-    glUniformMatrix4fv(u_projection, 1, GL_FALSE, &projection[0][0]);
-    
-    glUniform1i(u_baseTexture, 0);
-    glActiveTexture(GL_TEXTURE0);
-    _r->bindTexture(textureId);
-    
-    glUniform1i(u_noiseTexture, 1);
-    glActiveTexture(GL_TEXTURE1);
-    _r->bindTexture(dissolveNoiseTextureId);
-    
-    glUniform1i(u_rampTexture, 2);
-    glActiveTexture(GL_TEXTURE2);
-    _r->bindTexture(dissolveRampTextureId);
-    
-    glUniform1f(u_dissolve, dissolve);
-}
-
 void Splash::render() {
     _r->clear();
     
-    setupDissolve(splashLogo);
+    dissolveProgram->setFloatUniform("dissolve", dissolve);
+    dissolveProgram->use(_r);
+    _r->setGlobalAlpha();
+    
     _r->renderRect(WIDTH/2 - 175, HEIGHT/2 - 175, 350, 350, true);
 }
 

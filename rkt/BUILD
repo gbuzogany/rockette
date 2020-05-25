@@ -55,6 +55,8 @@ LINKOPTS = select({
     ],
     ":arm": [
         "-L/opt/vc/lib/",
+        "-Wl,-rpath /usr/local/lib",
+        "-L/usr/local/lib",
         "-latomic",
         "-lSDL2",
         "-lbrcmGLESv2",
@@ -69,12 +71,12 @@ LINKOPTS = select({
 
 filegroup(
     name = "textures",
-    srcs = glob(["etc/textures/*.tga"])
+    srcs = glob(["etc/textures/*"])
 )
 
 filegroup(
     name = "shaders",
-    srcs = glob(["etc/shaders/*.glsl"])
+    srcs = glob(["etc/shaders/*"])
 )
 
 filegroup(
@@ -140,7 +142,6 @@ cc_binary(
             "@sdl2_remote//:SDL2_hdrs",
         ],
         ":arm" : [
-            "@sdl2_remote//:SDL2_hdrs",
         ],
         ":sdl2_local" : [
             "@sdl2_local//:SDL2_lib",
