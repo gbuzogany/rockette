@@ -118,10 +118,10 @@ void FontWrapper::loadCharProperties(FT_Face &face, int size, FT_ULong charCode)
     }
     
     if (face->glyph->bitmap.width > maxWidth) {
-        maxWidth = face->glyph->bitmap.width;
+        maxWidth = face->glyph->bitmap.width + 1;
     }
     if (face->glyph->bitmap.rows > maxHeight) {
-        maxHeight = face->glyph->bitmap.rows;
+        maxHeight = face->glyph->bitmap.rows + 1;
     }
     
     Character character = {
