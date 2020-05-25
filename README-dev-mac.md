@@ -6,7 +6,7 @@
 
 ## 2 - Install Bazel
 
-[Bazel Installation Ihttps://docs.bazel.build/versions/master/install-os-x.html).
+[Bazel Installation](https://docs.bazel.build/versions/master/install-os-x.html).
 
 ## 3 - Build the project
 
