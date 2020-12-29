@@ -158,22 +158,42 @@ RocketteService::Service::Service() {
       RocketteService_method_names[0],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< RocketteService::Service, ::rkt::IntValue, ::rkt::StatusResponse>(
-          std::mem_fn(&RocketteService::Service::UpdateIntData), this)));
+          [](RocketteService::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::rkt::IntValue* req,
+             ::rkt::StatusResponse* resp) {
+               return service->UpdateIntData(ctx, req, resp);
+             }, this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       RocketteService_method_names[1],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< RocketteService::Service, ::rkt::FloatValue, ::rkt::StatusResponse>(
-          std::mem_fn(&RocketteService::Service::UpdateFloatData), this)));
+          [](RocketteService::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::rkt::FloatValue* req,
+             ::rkt::StatusResponse* resp) {
+               return service->UpdateFloatData(ctx, req, resp);
+             }, this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       RocketteService_method_names[2],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< RocketteService::Service, ::rkt::StringValue, ::rkt::StatusResponse>(
-          std::mem_fn(&RocketteService::Service::UpdateStringData), this)));
+          [](RocketteService::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::rkt::StringValue* req,
+             ::rkt::StatusResponse* resp) {
+               return service->UpdateStringData(ctx, req, resp);
+             }, this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       RocketteService_method_names[3],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< RocketteService::Service, ::rkt::BytesValue, ::rkt::StatusResponse>(
-          std::mem_fn(&RocketteService::Service::UpdateBytesData), this)));
+          [](RocketteService::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::rkt::BytesValue* req,
+             ::rkt::StatusResponse* resp) {
+               return service->UpdateBytesData(ctx, req, resp);
+             }, this)));
 }
 
 RocketteService::Service::~Service() {

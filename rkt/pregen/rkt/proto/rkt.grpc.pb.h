@@ -831,7 +831,14 @@ class RocketteService final {
    public:
     WithStreamedUnaryMethod_UpdateIntData() {
       ::grpc::Service::MarkMethodStreamed(0,
-        new ::grpc::internal::StreamedUnaryHandler< ::rkt::IntValue, ::rkt::StatusResponse>(std::bind(&WithStreamedUnaryMethod_UpdateIntData<BaseClass>::StreamedUpdateIntData, this, std::placeholders::_1, std::placeholders::_2)));
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::rkt::IntValue, ::rkt::StatusResponse>(
+            [this](::grpc_impl::ServerContext* context,
+                   ::grpc_impl::ServerUnaryStreamer<
+                     ::rkt::IntValue, ::rkt::StatusResponse>* streamer) {
+                       return this->StreamedUpdateIntData(context,
+                         streamer);
+                  }));
     }
     ~WithStreamedUnaryMethod_UpdateIntData() override {
       BaseClassMustBeDerivedFromService(this);
@@ -851,7 +858,14 @@ class RocketteService final {
    public:
     WithStreamedUnaryMethod_UpdateFloatData() {
       ::grpc::Service::MarkMethodStreamed(1,
-        new ::grpc::internal::StreamedUnaryHandler< ::rkt::FloatValue, ::rkt::StatusResponse>(std::bind(&WithStreamedUnaryMethod_UpdateFloatData<BaseClass>::StreamedUpdateFloatData, this, std::placeholders::_1, std::placeholders::_2)));
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::rkt::FloatValue, ::rkt::StatusResponse>(
+            [this](::grpc_impl::ServerContext* context,
+                   ::grpc_impl::ServerUnaryStreamer<
+                     ::rkt::FloatValue, ::rkt::StatusResponse>* streamer) {
+                       return this->StreamedUpdateFloatData(context,
+                         streamer);
+                  }));
     }
     ~WithStreamedUnaryMethod_UpdateFloatData() override {
       BaseClassMustBeDerivedFromService(this);
@@ -871,7 +885,14 @@ class RocketteService final {
    public:
     WithStreamedUnaryMethod_UpdateStringData() {
       ::grpc::Service::MarkMethodStreamed(2,
-        new ::grpc::internal::StreamedUnaryHandler< ::rkt::StringValue, ::rkt::StatusResponse>(std::bind(&WithStreamedUnaryMethod_UpdateStringData<BaseClass>::StreamedUpdateStringData, this, std::placeholders::_1, std::placeholders::_2)));
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::rkt::StringValue, ::rkt::StatusResponse>(
+            [this](::grpc_impl::ServerContext* context,
+                   ::grpc_impl::ServerUnaryStreamer<
+                     ::rkt::StringValue, ::rkt::StatusResponse>* streamer) {
+                       return this->StreamedUpdateStringData(context,
+                         streamer);
+                  }));
     }
     ~WithStreamedUnaryMethod_UpdateStringData() override {
       BaseClassMustBeDerivedFromService(this);
@@ -891,7 +912,14 @@ class RocketteService final {
    public:
     WithStreamedUnaryMethod_UpdateBytesData() {
       ::grpc::Service::MarkMethodStreamed(3,
-        new ::grpc::internal::StreamedUnaryHandler< ::rkt::BytesValue, ::rkt::StatusResponse>(std::bind(&WithStreamedUnaryMethod_UpdateBytesData<BaseClass>::StreamedUpdateBytesData, this, std::placeholders::_1, std::placeholders::_2)));
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::rkt::BytesValue, ::rkt::StatusResponse>(
+            [this](::grpc_impl::ServerContext* context,
+                   ::grpc_impl::ServerUnaryStreamer<
+                     ::rkt::BytesValue, ::rkt::StatusResponse>* streamer) {
+                       return this->StreamedUpdateBytesData(context,
+                         streamer);
+                  }));
     }
     ~WithStreamedUnaryMethod_UpdateBytesData() override {
       BaseClassMustBeDerivedFromService(this);

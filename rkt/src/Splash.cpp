@@ -34,8 +34,6 @@ Splash::~Splash() {
 }
 
 bool Splash::update(float delta) {
-    totalTime += delta;
-    
     SDL_Event ev;
     while (SDL_PollEvent(&ev))
     {

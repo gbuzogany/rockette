@@ -33,7 +33,7 @@ void Renderer::initGraphics()
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
     
-    window = SDL_CreateWindow("Rockette", 100, 100, 800, 480, SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Rockette", 100, 100, WIDTH, HEIGHT, SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN);
     assert(window);
 
     context = SDL_GL_CreateContext(window);
@@ -47,7 +47,7 @@ void Renderer::initGraphics()
     
     assert(SDL_GL_MakeCurrent(window, context) == 0);
     SDL_GL_SetSwapInterval(1);
-//    SDL_ShowCursor(SDL_DISABLE);
+    SDL_ShowCursor(SDL_DISABLE);
     
     printf("GL_VERSION = %s\n", glGetString(GL_VERSION));
     printf("GL_VENDOR = %s\n", glGetString(GL_VENDOR));
@@ -145,7 +145,7 @@ void Renderer::renderRect(GLfloat x, GLfloat y, GLfloat width, GLfloat height, b
     float bottom = flipY ? 1.0 : 0.0;
     
     GLfloat xpos = x;
-    GLfloat ypos = 480.0 - y - height;
+    GLfloat ypos = HEIGHT - y - height;
     GLfloat vertices[6][4] = {
         { xpos,         ypos + height,   0.0, top },
         { xpos,         ypos,            0.0, bottom },

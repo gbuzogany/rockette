@@ -40,10 +40,46 @@ bool MainScene::update(float delta) {
     while (SDL_PollEvent(&ev))
     {
         int key = ev.key.keysym.sym;
-        if (ev.type == SDL_QUIT || (ev.type == SDL_KEYUP && key == 'q'))
+        if (ev.type == SDL_FINGERDOWN)
+        {
+            printf("Finger down! TouchID: %lld FingerID: %lld x: %f y: %f dx: %f dy: %f\n",
+                   ev.tfinger.touchId,
+                   ev.tfinger.fingerId,
+                   ev.tfinger.x,
+                   ev.tfinger.y,
+                   ev.tfinger.dx,
+                   ev.tfinger.dy
+            );
+        }
+        else if (ev.type == SDL_FINGERUP)
+        {
+            printf("Finger up! TouchID: %lld FingerID: %lld x: %f y: %f dx: %f dy: %f\n",
+                   ev.tfinger.touchId,
+                   ev.tfinger.fingerId,
+                   ev.tfinger.x,
+                   ev.tfinger.y,
+                   ev.tfinger.dx,
+                   ev.tfinger.dy
+                   );
+        }
+        else if (ev.type == SDL_FINGERMOTION)
+        {
+            printf("Finger motion! TouchID: %lld FingerID: %lld x: %f y: %f dx: %f dy: %f\n",
+                   ev.tfinger.touchId,
+                   ev.tfinger.fingerId,
+                   ev.tfinger.x,
+                   ev.tfinger.y,
+                   ev.tfinger.dx,
+                   ev.tfinger.dy
+                   );
+        }
+        else if (ev.type == SDL_QUIT || (ev.type == SDL_KEYUP && key == 'q'))
         {
             exit(0);
             break;
+        }
+        else {
+            printf("Type: %d\n", ev.type);
         }
     }
     

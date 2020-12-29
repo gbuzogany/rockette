@@ -1,14 +1,19 @@
 #ifndef SpriteMap_hpp
 #define SpriteMap_hpp
 
-#include "Renderer.hpp"
-#include "Sprite.hpp"
-#include "Definitions.h"
-#include <map>
+#pragma push_macro("Bool")
+#undef Bool
 #include "rapidjson/reader.h"
 #include "rapidjson/error/en.h"
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
+#pragma pop_macro("Bool")
+
+#include "Renderer.hpp"
+#include "Sprite.hpp"
+#include "Definitions.h"
+#include <map>
+
 
 using namespace rapidjson;
 

@@ -9,15 +9,19 @@
 #ifndef ShaderProgram_hpp
 #define ShaderProgram_hpp
 
+#pragma push_macro("Bool")
+#undef Bool
+#include "rapidjson/reader.h"
+#include "rapidjson/error/en.h"
+#include "rapidjson/document.h"
+#include "rapidjson/filereadstream.h"
+#pragma pop_macro("Bool")
+
 #include <stdio.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "RawShaderProgram.hpp"
-#include "rapidjson/reader.h"
-#include "rapidjson/error/en.h"
-#include "rapidjson/document.h"
-#include "rapidjson/filereadstream.h"
 #include "Utils.hpp"
 #include "Renderer.hpp"
 

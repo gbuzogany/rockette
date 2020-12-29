@@ -14,7 +14,6 @@ class Splash : Scene {
     GLuint dissolveNoiseTextureId;
     GLuint splashLogo;
 
-    float totalTime = 0;
     float dissolve = 0;
     
     ShaderProgram *dissolveProgram;
